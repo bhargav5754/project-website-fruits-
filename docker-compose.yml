@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  db:
+    image: mongo:latest
+    container_name: fruit_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: fruit_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URL=mongodb://db:27017
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: fruit_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongodb_data:
